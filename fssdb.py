@@ -22,6 +22,13 @@ def touch(filename):
     f = open(filename, "x")
     f.close()
 
+def find_nth_space(string, n):
+    start = string.find(" ")
+    while start >= 0 and n > 1:
+        start = string.find(" ", start+1)
+        n -= 1
+    return start
+
 def processreq(msg, sock):
     splmsg = msg.split()
     backmsg = "NORET"
@@ -44,7 +51,7 @@ def processreq(msg, sock):
     elif splmsg[0] == "WRITEP":
         try:
             f = open(os.path.join(dbpath, splmsg[1], splmsg[2]), "w")
-            f.write(splmsg[3])
+            f.write(msg[find_nth_space(msg, 3) + 1:])
             f.close()
         except FileNotFoundError:
             backmsg = "DOESNOTEXIST"
